@@ -19,9 +19,9 @@
 	var TotItems = 0;
 	var GtotalP = 0;
 		
-	$(document).ready(function(e) {
+/*	$(document).ready(function(e) {
         PageLoadCart(MyFixURL+"mypage.php","ProductGrid");
-    });
+    });*/
 	
 	$(document).on( "pagecreate", function() {
 		
@@ -30,7 +30,7 @@
 		
 		//sessionStorage.setItem("Name", "Softweb");
 		//alert(sessionStorage.getItem("Name"));
-		
+		alert("hello");
 		/* Retrieve Existing Cookies */
 		SetGetCookies();
 		
@@ -55,7 +55,7 @@
         }
     	});
 		
-		$(".show-page-loading-msg").click(function(e) {
+		/*$(".show-page-loading-msg").click(function(e) {
              var $this = $( this ),
 		        theme = $this.jqmData( "theme" ) || $.mobile.loader.prototype.options.theme,
 		        msgText = $this.jqmData( "msgtext" ) || $.mobile.loader.prototype.options.text,
@@ -70,10 +70,12 @@
             html: html
         });
 	});
+	*/
 });
 
 function LoadCategory()
 {
+	alert("Hello world");
 	var Category = "";
 	var i=1;
 	$.ajax({
