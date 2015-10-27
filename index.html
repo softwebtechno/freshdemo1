@@ -1,0 +1,406 @@
+<!DOCTYPE html> 
+<html>
+<head>
+<meta charset="utf-8">
+<title>Fresh N Wholesales</title>
+<link rel="stylesheet" href="themes/MyCustom.min.css" />
+<link rel="stylesheet" href="themes/jquery.mobile.icons.min.css" />
+<!--<link href="jquery-mobile/jquery.mobile.theme-1.0.min.css" rel="stylesheet" type="text/css"/>
+<link href="jquery-mobile/jquery.mobile.structure-1.0.min.css" rel="stylesheet" type="text/css"/>-->
+<link rel="stylesheet" href="themes/jquery.mobile.structure-1.4.5.min.css" />
+<!--<script src="jquery-mobile/jquery-1.6.4.min.js" type="text/javascript"></script>-->
+<script src="jquery-mobile/jquery.mobile-1.0.min.js" type="text/javascript"></script>
+<script src="themes/jquery.js" type="text/javascript"></script>
+<script src="themes/jquery.mobile-1.4.5.min.js" type="text/javascript"></script>
+<script type="text/javascript" language="javascript">
+	
+	var MyFixURL = "http://softwebtechno.com/";
+	var cartItems = "";
+	var TotItems = 0;
+	var GtotalP = 0;
+		
+	$(document).ready(function(e) {
+        PageLoadCart(MyFixURL+"mypage.php","ProductGrid");
+    });
+	
+	$(document).on( "pagecreate", function() {
+		
+		//localStorage.setItem("lastname", "Smith");
+		//alert(localStorage.getItem("lastname"));
+		
+		//sessionStorage.setItem("Name", "Softweb");
+		//alert(sessionStorage.getItem("Name"));
+		
+		/* Retrieve Existing Cookies */
+		SetGetCookies();
+		
+		/* Load All Category */
+		LoadCategory();
+		
+		/* View Cart Detail */
+		$(".goToshopcart").click(function(e) {
+            LoadCartDetail();
+        });
+				
+		$(".ClickCategory").click(function(e) {
+            //alert($(this).data("value"));
+			LoadProducts($(this).data("value"));
+        });
+		
+		$( document ).on( "swiperight", function( e ) {
+        if ( $( ".ui-page-active" ).jqmData( "panel" ) !== "open" ) {
+            if ( e.type === "swiperight" ) {
+                $( ".left-panel" ).panel( "open" );
+            }
+        }
+    	});
+		
+		$(".show-page-loading-msg").click(function(e) {
+             var $this = $( this ),
+		        theme = $this.jqmData( "theme" ) || $.mobile.loader.prototype.options.theme,
+		        msgText = $this.jqmData( "msgtext" ) || $.mobile.loader.prototype.options.text,
+		        textVisible = $this.jqmData( "textvisible" ) || $.mobile.loader.prototype.options.textVisible,
+		        textonly = !!$this.jqmData( "textonly" );
+		        html = $this.jqmData( "html" ) || "";
+		    $.mobile.loading( "show", {
+            text: msgText,
+            textVisible: textVisible,
+            theme: theme,
+            textonly: textonly,
+            html: html
+        });
+	});
+});
+
+function LoadCategory()
+{
+	var Category = "";
+	var i=1;
+	$.ajax({
+			type:'POST',
+			url: MyFixURL+"getcategory.php",
+			async: false,
+			success:function(response){
+				 if (response.length > 0)
+				   {
+					  $.each(response, function(index, element) {
+						  if(parseInt(i)%2==0)
+						  {
+						  	Category += "<div class='ui-block-b'>";
+						  }
+						  else
+						  {
+							  Category += "<div class='ui-block-a'>";
+						  }
+						  Category += "<a  href='#shopproductpage' class='ui-bar ui-bar-a ClickCategory' data-corners='false' title=' "+ element["catname"] +" ' data-value='"+element["catid"]+"'  data-transition='flip' data-role='button' role='button'> "+element["catname"]+" </a></div>";
+						  i=i+1;
+						  //alert(element["catid"]+" "+element["catname"]);           
+					  });
+				   }
+				   $("#CategoryGrid").html(Category);
+			},
+			beforeSend: function(){
+				// Code to display spinner
+			},
+			complete: function(){
+				// Code to hide spinner.
+			}
+		});
+}
+
+function LoadCartDetail()
+{
+	var Products = "";
+	var i=1;
+	SetGetCookies();
+	$.ajax({
+			type:'POST',
+			url: MyFixURL+"getshopcart.php",
+			data:{CartSession:cartItems},
+			async: false,
+			success:function(response){
+				//alert(response);
+				 if (response.length > 0)
+				   {
+					  $.each(response, function(index, element) {
+					  Products += '<div class="panel100 productEffect"><div class="panel20"><a href="#DataDynamic" class="ui-bar ui-bar-a NoPadding ImageDiv MyBackground" data-corners="false" title=" Navigation " data-value="'+element["prodid"]+'" role="button"><img src="icon.png" /></a></div><div class="panel55"><a href="#DataDynamic" class="ui-bar ui-bar-a NoPadding NoBorder fontLeft MyBackground" data-corners="false" title=" Navigation " data-value="'+element["prodid"]+'" style="margin-bottom:0px;" role="button"> '+element["proname"]+' </a><a class="ui-bar ui-bar-a NoPadding fontLeft NoBorder MyBackground" style="margin-top:0px;" data-corners="false" title=" Price per Quote " data-value="'+element["price"]+'" role="button" id="cost1'+element["prodid"]+'">Price : Rs. '+element["price"]+'</a></div><div class="panel25"><a class="ui-btn-center ui-btn-corner-all ui-btn panel10 ui-icon-plus ui-btn-icon-notext ui-shadow IncreseQty" title=" Increase Quantity " data-form="ui-icon" data-role="button" role="button" data-transition="pop" data-itemvalue="'+element["prodid"]+'"> + </a><div class="panel10"><a class="ui-bar ui-bar-a NoPadding fontLeft NoBorder MyBackground" style="margin-bottom:0px;" data-corners="false" title=" Quantity " data-value="'+element["prodid"]+'" role="button" id="Count'+element["prodid"]+'">'+element["Qty"]+'</a></div><a class="ui-btn-center ui-btn-corner-all ui-btn panel10 ui-icon-minus ui-btn-icon-notext ui-shadow DecreseQty" title=" Decrease Quantity " data-form="ui-icon" data-role="button" role="button" data-transition="pop"  data-itemvalue="'+element["prodid"]+'"> - </a><div><a class="ui-bar ui-bar-a NoPadding fontLeft NoBorder MyBackground" style="margin-top:0px;" data-corners="false" title=" Price per Quote " data-value="'+element["price"]+'" role="button" id="cost'+element["prodid"]+'"> Rs. '+element["subTotal"]+'</a></div></div></div>';
+						  i=i+1;
+						  //alert(element["catid"]+" "+element["catname"]);           
+					  });
+				   }
+				   $("#CartProductsGrid").html(Products);
+				   GenerateEvent();
+			},
+			beforeSend: function(){
+				// Code to display spinner
+			},
+			complete: function(){
+				// Code to hide spinner.
+			}
+		});
+}
+
+function LoadProducts(CatId)
+{
+	var Products = "";
+	var i=1;
+	SetGetCookies();
+	$.ajax({
+			type:'POST',
+			url: MyFixURL+"getproducts.php",
+			data:{catId:CatId,CartSession:cartItems},
+			async: false,
+			success:function(response){
+				//alert(response);
+				 if (response.length > 0)
+				   {
+					  $.each(response, function(index, element) {
+					  Products += '<div class="panel100 productEffect"><div class="panel20"><a href="#DataDynamic" class="ui-bar ui-bar-a NoPadding ImageDiv MyBackground" data-corners="false" title=" Navigation " data-value="'+element["prodid"]+'" role="button"><img src="icon.png" /></a></div><div class="panel55"><a href="#DataDynamic" class="ui-bar ui-bar-a NoPadding NoBorder fontLeft MyBackground" data-corners="false" title=" Navigation " data-value="'+element["prodid"]+'" style="margin-bottom:0px;" role="button"> '+element["proname"]+' </a><a class="ui-bar ui-bar-a NoPadding fontLeft NoBorder MyBackground" style="margin-top:0px;" data-corners="false" title=" Price per Quote " data-value="'+element["price"]+'" role="button" id="cost1'+element["prodid"]+'">Price : Rs. '+element["price"]+'</a></div><div class="panel25"><a class="ui-btn-center ui-btn-corner-all ui-btn panel10 ui-icon-plus ui-btn-icon-notext ui-shadow IncreseQty" title=" Increase Quantity " data-form="ui-icon" data-role="button" role="button" data-transition="pop" data-itemvalue="'+element["prodid"]+'"> + </a><div class="panel10"><a class="ui-bar ui-bar-a NoPadding fontLeft NoBorder MyBackground" style="margin-bottom:0px;" data-corners="false" title=" Quantity " data-value="'+element["prodid"]+'" role="button" id="Count'+element["prodid"]+'">'+element["Qty"]+'</a></div><a class="ui-btn-center ui-btn-corner-all ui-btn panel10 ui-icon-minus ui-btn-icon-notext ui-shadow DecreseQty" title=" Decrease Quantity " data-form="ui-icon" data-role="button" role="button" data-transition="pop"  data-itemvalue="'+element["prodid"]+'"> - </a><div><a class="ui-bar ui-bar-a NoPadding fontLeft NoBorder MyBackground" style="margin-top:0px;" data-corners="false" title=" Price per Quote " data-value="'+element["price"]+'" role="button" id="cost'+element["prodid"]+'"> Rs. '+element["subTotal"]+'</a></div></div></div>';
+						  i=i+1;
+						  //alert(element["catid"]+" "+element["catname"]);           
+					  });
+				   }
+				   $("#ProductsGrid").html(Products);
+				   GenerateEvent();
+			},
+			beforeSend: function(){
+				// Code to display spinner
+			},
+			complete: function(){
+				// Code to hide spinner.
+			}
+		});
+}
+
+function getShopBottomCart(CartSession1,GTotal1,ItemTotal1,dataitemId,dataprice,dataqty)
+{
+	 $.ajax({
+			type:'POST',
+			url: MyFixURL+"addtocart.php",
+			data:{CartSession:CartSession1,GTotal:GTotal1,ItemTotal:ItemTotal1,cartItems:1,itemId:dataitemId,price:dataprice,qty:dataqty},
+			async: false,
+			success:function(d){
+				// Your code.
+				if (d.length > 0)
+				   {
+					  $.each(d,function(index,values){
+						localStorage.setItem("CartItems", values["Cart"]);
+						localStorage.setItem("TotalItems", values["ItemTot"]);
+						localStorage.setItem("GTotal", values["GTotal"]);
+						SetGetCookies();
+						});
+				   }
+				   SetGetCookies();
+				//$("#ProductGrid").html(d);
+			},
+			beforeSend: function(){
+				// Code to display spinner
+			},
+			complete: function(){
+				// Code to hide spinner.
+			}
+		});
+}
+
+
+function PageLoadCart(URL,DivId)
+{
+	$.ajax({
+			type:'POST',
+			url: MyFixURL+URL,
+			data:{cartItems:0},
+			async: false,
+			success:function(d){
+				// Your code.
+				$("#"+DivId).html(d);
+				//alert(d);
+				//$("#ProductGrid").html(d);
+			},
+			beforeSend: function(){
+				// Code to display spinner
+			},
+			complete: function(){
+				// Code to hide spinner.
+			}
+		});
+}
+function SetGetCookies()
+{
+			   if(localStorage.getItem("CartItems")!==null)
+			   {
+				   cartItems = localStorage.getItem("CartItems");
+			   }
+			   if(localStorage.getItem("TotalItems")!==null)
+			   {
+				   TotItems = localStorage.getItem("TotalItems");
+			   }
+			   if(localStorage.getItem("GTotal")!==null)
+			   {
+				   GtotalP = localStorage.getItem("GTotal");
+			   }
+			   $("#goToshopcart").html(TotItems+" Item(s) - Rs. "+GtotalP);  
+}
+function GenerateEvent()
+{
+	$(".IncreseQty").click(function(e) {
+			   var ItemId = $(this).data("itemvalue");
+			   var Count = $("#Count"+ItemId).html();
+			   var Cost = $("#cost"+ItemId).data("value");
+			   $("#cost"+ItemId).html("Rs. "+(parseFloat(Cost)*(parseFloat(Count)+1)));
+			   $("#Count"+ItemId).html(parseInt(Count)+1);
+			   SetGetCookies();	   
+			   getShopBottomCart(cartItems,GtotalP,TotItems,ItemId,Cost,1);
+			   //PageLoadCart("pageLoadCart.php","goToshopcart");
+        });
+	$(".DecreseQty").click(function(e) {
+           var ItemId = $(this).data("itemvalue");
+		   var Count = $("#Count"+ItemId).html();
+		   if(Count>0)
+		   {
+			    var Cost = $("#cost"+ItemId).data("value");
+		   		$("#cost"+ItemId).html("Rs. "+(parseFloat(Cost)*(parseFloat(Count)-1)));
+		   		$("#Count"+ItemId).html((parseInt(Count)-1));
+				SetGetCookies();
+				getShopBottomCart(cartItems,GtotalP,TotItems,ItemId,Cost,-1);
+		   		//PageLoadCart("pageLoadCart.php","goToshopcart");
+		   }
+        });
+}
+/* 
+	success: function (response) {
+       if (response.length > 0)
+       {
+          $.each(response, function(index, element) {
+               $('#From').append("<option value='" + element[0] + "'>" + element[0] + "</option>");
+               $('#To').append("<option value='" + element[1] + "'>" + element[1] + "</option>");           
+          });
+       }
+    } 
+*/
+</script>
+</head> 
+<body> 
+<div data-role="page" id="Homepage" class="PanelPage" data-url="demo-page">
+  <div data-role="header" data-theme="a">
+        <h1>Swipe left or right</h1>
+        <a href="#left-panel" data-icon="bars" data-iconpos="notext" data-shadow="false" data-iconshadow="false" class="ui-btn-left ui-btn-corner-all ui-btn ui-icon-bars ui-btn-icon-notext ui-shadow">Open left panel</a>
+        <a href="#" data-icon="carat-l" data-iconpos="notext" data-shadow="false" data-iconshadow="false" class="ui-btn-right ui-btn-corner-all ui-btn ui-icon-bars ui-btn-icon-notext ui-shadow">Open right panel</a>
+    </div><!-- /header -->
+    <div role="main" class="ui-content">
+        <dl>
+            <dt>Swipe <span>verb</span></dt>
+            <dd><b>1.</b> to strike or move with a sweeping motion</dd>
+        </dl>
+        <a href="#demo-intro" data-rel="back" class="back-btn ui-btn ui-corner-all ui-shadow ui-mini ui-btn-inline ui-icon-back ui-btn-icon-right">Back to demo intro</a>
+    </div><!-- /content -->
+    <div data-role="panel" id="left-panel" class="left-panel"  data-display="overlay" data-theme="a">
+        <h4 style="margin:5px;">Nevigation</h4>
+        <a href="#" data-rel="close" class="ui-btn ui-corner-all ui-shadow ui-icon-delete ui-btn-right ui-btn-icon-notext ">Close</a>
+        <hr>
+    </div><!-- /panel -->
+    
+     <div data-role="footer"  data-theme="a" data-position="fixed">
+		<a class="ui-btn-left ui-btn-corner-all ui-btn ui-icon-delete ui-btn-icon-notext ui-shadow" title=" Close " data-form="ui-icon" data-role="button" role="button" style="margin:0px;"> Close </a>
+        <br>&nbsp;<br>
+        <a class="ui-btn-right ui-btn-corner-all ui-btn ui-icon-arrow-r ui-btn-icon-right ui-shadow" title=" Login Now " data-form="ui-icon" href="#shoppage" data-transition="flip" data-role="button" role="button" style="margin:0px;"> Continue </a>
+	</div>
+</div>
+
+<!-- Home shop Page -->
+<div data-role="page" id="shoppage" data-url="demo-page">
+  <div data-role="header" data-theme="a">
+        <h1>Swipe left or right</h1>
+        <a href="#left-panel" data-icon="bars" data-iconpos="notext" data-shadow="false" data-iconshadow="false" class="ui-btn-left ui-btn-corner-all ui-btn ui-icon-bars ui-btn-icon-notext ui-shadow">Open left panel</a>
+        <a href="#" data-icon="carat-l" data-iconpos="notext" data-shadow="false" data-iconshadow="false" class="ui-btn-right ui-btn-corner-all ui-btn ui-icon-bars ui-btn-icon-notext ui-shadow">Open right panel</a>
+    </div><!-- /header -->
+    
+    <div role="main" class="ui-content">  
+        <div class="ui-grid-a" id="CategoryGrid">
+      
+		</div><!-- /grid-a -->
+    </div><!-- /content -->
+    
+    <!-- Menu Panel -->
+    <div data-role="panel" id="left-panel" class="left-panel"  data-display="overlay" data-theme="a">
+        <h4 style="margin:5px;">Nevigation</h4>
+        <a href="#" data-rel="close" class="ui-btn ui-corner-all ui-shadow ui-icon-delete ui-btn-right ui-btn-icon-notext ">Close</a>
+        <hr>
+    </div><!-- /panel -->
+    
+     <div data-role="footer"  data-theme="a" data-position="fixed">
+		<a class="ui-btn-left ui-btn-corner-all ui-btn ui-icon-delete ui-btn-icon-notext ui-shadow" title=" Close " data-form="ui-icon" data-role="button" role="button" style="margin:0px;"> Close </a>
+        <br>&nbsp;<br>
+        <a class="ui-btn-right ui-btn-corner-all ui-btn ui-icon-arrow-r ui-btn-icon-right ui-shadow" title=" Login Now " data-form="ui-icon" data-role="button" role="button" style="margin:0px;"> Login </a>
+	</div>
+</div>
+<!-- End of Page -->
+
+<!-- Home Products Page -->
+<div data-role="page" id="shopproductpage" data-url="demo-page">
+  <div data-role="header" data-theme="a" data-position="fixed">
+        <h1>Swipe left or right</h1>
+        <a href="#left-panel" data-icon="bars" data-iconpos="notext" data-shadow="false" data-iconshadow="false" class="ui-btn-left ui-btn-corner-all ui-btn ui-icon-bars ui-btn-icon-notext ui-shadow">Open left panel</a>
+        <a href="#" data-icon="carat-l" data-iconpos="notext" data-shadow="false" data-iconshadow="false" class="ui-btn-right ui-btn-corner-all ui-btn ui-icon-bars ui-btn-icon-notext ui-shadow">Open right panel</a>
+    </div><!-- /header -->
+    
+        <div class="Ui-customeClass ui-bar ui-bar-a NoPadding" style="padding:1%; background:#FFF;" id="ProductsGrid">
+      
+		</div><!-- /grid-a -->
+    
+    <!-- Menu Panel -->
+    <div data-role="panel" id="left-panel" class="left-panel"  data-display="overlay" data-theme="a">
+        <h4 style="margin:5px;">Nevigation</h4>
+        <a href="#" data-rel="close" class="ui-btn ui-corner-all ui-shadow ui-icon-delete ui-btn-right ui-btn-icon-notext ">Close</a>
+        <hr>
+    </div><!-- /panel -->
+    
+     <div data-role="footer"  data-theme="a" data-position="fixed">
+		<a class="ui-btn-right ui-btn-corner-all ui-btn ui-icon-shop ui-btn-icon-right ui-shadow goToshopcart" title=" go to Cart " data-form="ui-icon" data-role="button" role="button" style="margin:0px;" href="#shopproductcart" id="goToshopcart" data-transition="pop"> No Item Selected </a>
+        <a class="ui-btn-bottom ui-btn-corner-all ui-btn ui-icon-arrow-l ui-btn-icon-left ui-shadow" title=" Login Now " data-form="ui-icon" data-role="button" role="button" style="margin:0px;" href="#shoppage" data-transition="flip"> Back </a>
+	</div>
+</div>
+<!-- End of Page -->
+
+<!-- Cart Products Page -->
+<div data-role="page" id="shopproductcart" data-url="demo-page">
+  <div data-role="header" data-theme="a" data-position="fixed">
+        <h1>Swipe left or right</h1>
+        <a href="#left-panel" data-icon="bars" data-iconpos="notext" data-shadow="false" data-iconshadow="false" class="ui-btn-left ui-btn-corner-all ui-btn ui-icon-bars ui-btn-icon-notext ui-shadow">Nevigation</a>
+        <a href="#" data-icon="carat-l" data-iconpos="notext" data-shadow="false" data-iconshadow="false" class="ui-btn-right ui-btn-corner-all ui-btn ui-icon-bars ui-btn-icon-notext ui-shadow">Open right panel</a>
+    </div><!-- /header -->
+    
+       <div class="Ui-customeClass ui-bar ui-bar-a NoPadding" data-position="fixed" style="padding-left:1%;">
+        <div class="panel100 productEffect">
+   			 <div class="panel50">
+            <a href="#gotoPay" class="ui-bar ui-bar-a NoPadding NoBorder fontLeft MyBackground ui-btn ui-icon-shop ui-btn-icon-left" data-corners="false" title=" Navigation " id="goToshopcart1" data-value="123" role="button">
+            	 No Item Selected 
+             </a>
+             </div>
+            <div class="panel50">
+            	 <a class="ui-bar ui-bar-a NoPadding NoBorder MyBackground ui-btn ui-icon-arrow-r ui-btn-icon-right ui-shadow LoginCheker" data-corners="false" style="float:right;" title=" Order Now " role="button">
+            	 Order Now 
+             	</a>
+            </div>
+        </div>
+	</div><!-- /grid-a -->
+
+    
+        <div class="Ui-customeClass ui-bar ui-bar-a NoPadding" style="padding:1%; background:#FFF;" id="CartProductsGrid">
+      
+		</div><!-- /grid-a -->
+    
+    <!-- Menu Panel -->
+    <div data-role="panel" id="left-panel" class="left-panel"  data-display="overlay" data-theme="a">
+        <h4 style="margin:5px;">Nevigation</h4>
+        <a href="#" data-rel="close" class="ui-btn ui-corner-all ui-shadow ui-icon-delete ui-btn-right ui-btn-icon-notext ">Close</a>
+        <hr>
+    </div><!-- /panel -->
+    
+     <div data-role="footer"  data-theme="a" data-position="fixed">
+		<a class="ui-btn-right ui-btn-corner-all ui-btn ui-icon-shop ui-btn-icon-right ui-shadow goToshopcart" title=" go to Cart " data-form="ui-icon" data-role="button" role="button" style="margin-top:0px;" href="#shopcart" id="goToshopcart1" data-transition="pop"> No Item Selected </a>
+        <a class="ui-btn-bottom ui-btn-corner-all ui-btn ui-icon-arrow-l ui-btn-icon-left ui-shadow" title=" Login Now " data-form="ui-icon" data-role="button" role="button" style="margin-top:0px;" href="#shoppage" data-transition="flip"> Back </a>
+	</div>
+</div>
+<!-- End of Page -->
+</body>
+</html>

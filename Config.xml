@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+    <widget xmlns   = "http://www.w3.org/ns/widgets"
+        xmlns:gap   = "http://phonegap.com/ns/1.0"
+        id          = "soft.webdevelopment.example"
+        versionCode = "10" 
+        version     = "1.0.0" >
+
+    <!-- versionCode is optional and Android only -->
+
+    <name>Softweb Technologies</name>
+
+    <description>
+        Softweb Technologies is an ISO 9001:2008 Certified Company located in India and Canada with our core activities related into web application development, ecommerce development as well as software development since past 5 years. We have a highly skilled team of 25+ skilled developers providing our remarkable service.
+    </description>
+
+	<icon src="icon.png" />
+
+    <author href="http://softwebtechno.com/" email="info@softwebtechno.com/">
+        Softweb Technologies
+    </author>
+
+</widget>
