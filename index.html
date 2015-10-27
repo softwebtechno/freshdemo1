@@ -30,7 +30,7 @@
 		
 		//sessionStorage.setItem("Name", "Softweb");
 		//alert(sessionStorage.getItem("Name"));
-		alert("hello");
+	
 		/* Retrieve Existing Cookies */
 		SetGetCookies();
 		
@@ -75,7 +75,6 @@
 
 function LoadCategory()
 {
-	alert("Hello world");
 	var Category = "";
 	var i=1;
 	$.ajax({
@@ -83,6 +82,7 @@ function LoadCategory()
 			url: MyFixURL+"getcategory.php",
 			async: false,
 			success:function(response){
+				alert(response);
 				 if (response.length > 0)
 				   {
 					  $.each(response, function(index, element) {
