@@ -7,7 +7,7 @@
 
     <!-- versionCode is optional and Android only -->
 
-	<access origin="http://softwebtechno.com" subdomains="true"  />
+	<access origin="*" />
 
     <name>Softweb Technologies</name>
 
