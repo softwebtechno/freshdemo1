@@ -25,26 +25,26 @@
 	
 	$(document).on( "pagecreate", function() {
 		
-		//localStorage.setItem("lastname", "Smith");
-		//alert(localStorage.getItem("lastname"));
+		localStorage.setItem("lastname", "Smith");
+		alert(localStorage.getItem("lastname"));
 		
-		//sessionStorage.setItem("Name", "Softweb");
-		//alert(sessionStorage.getItem("Name"));
+		sessionStorage.setItem("Name", "Softweb");
+		alert(sessionStorage.getItem("Name"));
 	
 		/* Retrieve Existing Cookies */
-		SetGetCookies();
+		//SetGetCookies();
 		
 		/* Load All Category */
-		LoadCategory();
+		//LoadCategory();
 		
 		/* View Cart Detail */
 		$(".goToshopcart").click(function(e) {
-            LoadCartDetail();
+        //    LoadCartDetail();
         });
 				
 		$(".ClickCategory").click(function(e) {
             //alert($(this).data("value"));
-			LoadProducts($(this).data("value"));
+			//LoadProducts($(this).data("value"));
         });
 		
 		$( document ).on( "swiperight", function( e ) {
@@ -121,6 +121,7 @@ function LoadCartDetail()
 			type:'POST',
 			url: MyFixURL+"getshopcart.php",
 			data:{CartSession:cartItems},
+			dataType: "jsonp",
 			async: false,
 			success:function(response){
 				//alert(response);
@@ -154,6 +155,7 @@ function LoadProducts(CatId)
 			url: MyFixURL+"getproducts.php",
 			data:{catId:CatId,CartSession:cartItems},
 			async: false,
+			dataType: "jsonp",
 			success:function(response){
 				//alert(response);
 				 if (response.length > 0)
@@ -181,6 +183,7 @@ function getShopBottomCart(CartSession1,GTotal1,ItemTotal1,dataitemId,dataprice,
 	 $.ajax({
 			type:'POST',
 			url: MyFixURL+"addtocart.php",
+			dataType: "jsonp",
 			data:{CartSession:CartSession1,GTotal:GTotal1,ItemTotal:ItemTotal1,cartItems:1,itemId:dataitemId,price:dataprice,qty:dataqty},
 			async: false,
 			success:function(d){
@@ -270,17 +273,7 @@ function GenerateEvent()
 		   }
         });
 }
-/* 
-	success: function (response) {
-       if (response.length > 0)
-       {
-          $.each(response, function(index, element) {
-               $('#From').append("<option value='" + element[0] + "'>" + element[0] + "</option>");
-               $('#To').append("<option value='" + element[1] + "'>" + element[1] + "</option>");           
-          });
-       }
-    } 
-*/
+
 </script>
 </head> 
 <body> 
@@ -295,7 +288,7 @@ function GenerateEvent()
             <dt>Swipe <span>verb</span></dt>
             <dd><b>1.</b> to strike or move with a sweeping motion</dd>
         </dl>
-        <a href="#demo-intro" data-rel="back" class="back-btn ui-btn ui-corner-all ui-shadow ui-mini ui-btn-inline ui-icon-back ui-btn-icon-right">Back to demo intro</a>
+        <a href="#shoppage" data-rel="back" class="back-btn ui-btn ui-corner-all ui-shadow ui-mini ui-btn-inline ui-icon-back ui-btn-icon-right">Back to demo intro</a>
     </div><!-- /content -->
     <div data-role="panel" id="left-panel" class="left-panel"  data-display="overlay" data-theme="a">
         <h4 style="margin:5px;">Nevigation</h4>
