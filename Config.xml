@@ -7,8 +7,6 @@
 
     <!-- versionCode is optional and Android only -->
 
-	<access origin="*" />
-
     <name>Softweb Technologies</name>
 
     <description>
