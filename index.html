@@ -19,17 +19,18 @@
 	var TotItems = 0;
 	var GtotalP = 0;
 		
-/*	$(document).ready(function(e) {
-        PageLoadCart(MyFixURL+"mypage.php","ProductGrid");
-    });*/
+	$(document).ready(function(e) {
+        //PageLoadCart(MyFixURL+"mypage.php","ProductGrid");
+		 LoadCategory();
+    });
 	
 	$(document).on( "pagecreate", function() {
 		
-		localStorage.setItem("lastname", "Smith");
-		alert(localStorage.getItem("lastname"));
+		//localStorage.setItem("lastname", "Smith");
+		//alert(localStorage.getItem("lastname"));
 		
-		sessionStorage.setItem("Name", "Softweb");
-		alert(sessionStorage.getItem("Name"));
+		//sessionStorage.setItem("Name", "Softweb");
+		//alert(sessionStorage.getItem("Name"));
 	
 		/* Retrieve Existing Cookies */
 		//SetGetCookies();
