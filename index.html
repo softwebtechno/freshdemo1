@@ -80,8 +80,8 @@ function LoadCategory()
 	var i=1;
 	alert(MyFixURL);
 	$.ajax({
-			type:'POST',
-			url: MyFixURL+"getcategory.php",
+			type:"POST",
+			url : "http://domain/public/login",
 			data:{cat:catId},
 			async: false,
 			crossDomain:true,
