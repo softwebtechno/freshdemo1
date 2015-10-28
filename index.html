@@ -74,17 +74,18 @@
 	*/
 });
 
+
 function LoadCategory()
 {
 	var Category = "";
 	var i=1;
-	alert(MyFixURL);
 	$.ajax({
 			type:"POST",
-			url : "http://domain/public/login",
+			crossDomain:true,
+			contentType: 'application/json',
+			url : MyFixURL+"getcategory.php",
 			data:{cat:catId},
 			async: false,
-			crossDomain:true,
 			dataType: "jsonp",
 			success:function(response){
 				alert(response);
