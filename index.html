@@ -78,11 +78,13 @@ function LoadCategory()
 {
 	var Category = "";
 	var i=1;
+	alert(MyFixURL);
 	$.ajax({
 			type:'POST',
 			url: MyFixURL+"getcategory.php",
 			data:{cat:catId},
 			async: false,
+			crossDomain:true,
 			dataType: "jsonp",
 			success:function(response){
 				alert(response);
